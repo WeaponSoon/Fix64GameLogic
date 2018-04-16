@@ -6,6 +6,17 @@ using FixMath.NET;
 
 namespace SWPLogicLayerF
 {
+    public class MathF
+    {
+        public static Fix64 min(Fix64 a, Fix64 b)
+        {
+            return (a < b) ? a : b;
+        }
+        public static Fix64 max(Fix64 a, Fix64 b)
+        {
+            return (a < b) ? b : a;
+        }
+    }
 
     public struct SQuaternion
     {
