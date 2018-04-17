@@ -168,10 +168,37 @@ namespace SWPLogicLayerF
         {
             if(other.GetType().Equals(typeof(SSphereCollider)))
             {
-
+                var minDis = (other.position - position).sqrtMagnitude;
+                if(minDis <= (radius + other.radius)*(radius + other.radius))
+                {
+                    SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
+                }
             }
             else if(other.GetType().Equals(typeof(SCapsuleCollider)))
             {
+                var oth = other as SCapsuleCollider;
+                Fix64 minDis = Fix64.MaxValue;
+                var atop = position - oth.positionA;
+                var btop = position - oth.positionB;
+                var ti = atop.Dot(oth.up);
+                var tj = btop.Dot(oth.up);
+                var w = position - oth.positionA;
+                if(ti * tj < Fix64.Zero)
+                {
+                    minDis = w.sqrtMagnitude - w.Dot(oth.up) * w.Dot(up);
+                }
+                else if(ti <= Fix64.Zero)
+                {
+                    minDis = atop.sqrtMagnitude;
+                }
+                else if(tj >= Fix64.Zero)
+                {
+                    minDis = btop.sqrtMagnitude;
+                }
+                if (minDis <= (radius + other.radius) * (radius + other.radius))
+                {
+                    SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
+                }
 
             }
             
@@ -209,6 +236,28 @@ namespace SWPLogicLayerF
         {
             if(other.GetType().Equals(typeof(SSphereCollider)))
             {
+                Fix64 minDis = Fix64.MaxValue;
+                var atop = other.position - positionA;
+                var btop = other.position - positionB;
+                var ti = atop.Dot(up);
+                var tj = btop.Dot(up);
+                var w = other.position - positionA;
+                if(ti * tj < Fix64.Zero)
+                {
+                    minDis = w.sqrtMagnitude - w.Dot(up) * w.Dot(up);
+                }
+                else if(ti <= Fix64.Zero)
+                {
+                    minDis = atop.sqrtMagnitude;
+                }
+                else if(tj >= Fix64.Zero)
+                {
+                    minDis = btop.sqrtMagnitude;
+                }
+                if (minDis <= (radius + other.radius) * (radius + other.radius))
+                {
+                    SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
+                }
 
             }
             else if(other.GetType().Equals(typeof(SCapsuleCollider)))
@@ -301,7 +350,7 @@ namespace SWPLogicLayerF
                         et = etRight;
                         minDis = minRight;
                     }
-                    if(minDis < radius + oth.radius)
+                    if(minDis <= (radius + oth.radius)*(radius + oth.radius))
                     {
                         SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
                     }
@@ -346,7 +395,7 @@ namespace SWPLogicLayerF
                         minValueFunc(Fix64.One, (Fix64)2 * u1wf, wf.sqrtMagnitude, Fix64.Zero, length, out et);
                     }
 
-                    if(minDis < radius + oth.radius)
+                    if(minDis <= (radius + oth.radius)*(radius + oth.radius))
                     {
                         SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
                     }
