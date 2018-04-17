@@ -49,7 +49,6 @@
     <Compile Include="SComponent.cs" />
     <Compile Include="SFramework.cs" />
     <Compile Include="SGameObject.cs" />
-    <Compile Include="SMath.cs" />
     <Compile Include="SMathF.cs" />
     <Compile Include="SPhysics.cs" />
     <Compile Include="STransform.cs" />
