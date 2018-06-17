@@ -15,6 +15,18 @@ namespace SWPLogicLayerF{
 		{
 
 		}
+		public virtual void OnCollisionEnter(SCollisionResult res)
+		{
+
+		}
+		public virtual void OnCollisionStay(SCollisionResult res)
+		{
+
+		}
+		public virtual void OnCollisionEnd(SCollisionResult res)
+		{
+
+		}
 		public virtual void Update()
 		{
 

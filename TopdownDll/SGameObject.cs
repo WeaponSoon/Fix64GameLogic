@@ -458,6 +458,36 @@ namespace SWPLogicLayerF
                     i.Value.BeforePhysicsUpdate();
                 }
         }
+        internal void OnCollisionEnter(SCollisionResult res)
+        {
+            if(isAlive)
+            {
+                foreach (var i in _componentList)
+                {
+                    i.Value.OnCollisionEnter(res);
+                }
+            }
+        }
+        internal void OnCollisionStay(SCollisionResult res)
+        {
+            if(isAlive)
+            {
+                foreach (var i in _componentList)
+                {
+                    i.Value.OnCollisionStay(res);
+                }
+            }
+        }
+        internal void OnCollisionEnd(SCollisionResult res)
+        {
+            if(isAlive)
+            {
+                foreach(var i in _componentList)
+                {
+                    i.Value.OnCollisionEnd(res);
+                }
+            }
+        }
         internal void Update()
         {
             if (isAlive)

@@ -58,7 +58,13 @@ namespace SWPLogicLayerF
         private SVector3 _localPosition = SVector3.zero;
         private SQuaternion _localRotation = new SQuaternion((Fix64)0,(Fix64)0,(Fix64)0,(Fix64)1);
         private Fix64 _radius;
-        
+        private List<SCollisionResult> _beginOverlapedCollider = new List<SCollisionResult>();
+        private List<SCollisionResult> _overlapedCollider = new List<SCollisionResult>();
+        private List<SCollisionResult> _endOverlapedCollider = new List<SCollisionResult>();
+        protected void handleResult(SCollisionResult res)
+        {
+            
+        }
         public SVector3 localPosition
         {
             get {
@@ -159,11 +165,56 @@ namespace SWPLogicLayerF
             }
         }
 
+        protected abstract bool GenerateCollisionRes(SICollider other,out SCollisionResult selfres, out SCollisionResult otherres);
         internal abstract void DetectCollision(SICollider other);
     }
 
     public class SSphereCollider : SICollider
     {
+
+        protected override bool GenerateCollisionRes(SICollider other,out SCollisionResult selfres, out SCollisionResult otherres)
+        {
+            if(other.GetType().Equals(typeof(SSphereCollider)))
+            {
+                var minDis = (other.position - position).sqrtMagnitude;
+                if(minDis <= (radius + other.radius)*(radius + other.radius))
+                {
+
+                    //SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
+                }
+            }
+            else if(other.GetType().Equals(typeof(SCapsuleCollider)))
+            {
+                var oth = other as SCapsuleCollider;
+                Fix64 minDis = Fix64.MaxValue;
+                var atop = position - oth.positionA;
+                var btop = position - oth.positionB;
+                var ti = atop.Dot(oth.up);
+                var tj = btop.Dot(oth.up);
+                var w = position - oth.positionA;
+                if(ti * tj < Fix64.Zero)
+                {
+                    minDis = w.sqrtMagnitude - w.Dot(oth.up) * w.Dot(up);
+                }
+                else if(ti <= Fix64.Zero)
+                {
+                    minDis = atop.sqrtMagnitude;
+                }
+                else if(tj >= Fix64.Zero)
+                {
+                    minDis = btop.sqrtMagnitude;
+                }
+                if (minDis <= (radius + other.radius) * (radius + other.radius))
+                {
+                    SDebug.LogWarning(gameObject.name + " BAAAAAANG!!!  " + minDis);
+                }
+
+            }
+            selfres = new SCollisionResult();
+            otherres = new SCollisionResult();
+            return false;
+        }
+
         internal override void DetectCollision(SICollider other)
         {
             if(other.GetType().Equals(typeof(SSphereCollider)))
@@ -231,7 +282,12 @@ namespace SWPLogicLayerF
             }
         }
         
-        
+        protected override bool GenerateCollisionRes(SICollider other,out SCollisionResult selfres, out SCollisionResult otherres)
+        {
+            selfres = new SCollisionResult();
+            otherres = new SCollisionResult();
+            return false;
+        }
         internal override void DetectCollision(SICollider other)
         {
             if(other.GetType().Equals(typeof(SSphereCollider)))
