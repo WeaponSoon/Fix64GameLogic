@@ -291,9 +291,24 @@ namespace SWPLogicLayerF
         {
             if (!isAlive)
                 return null;
+            if (HasComponentInWillDel(type))
+            {
+                return null;
+            }
             if (_componentList.ContainsKey(type))
             {
                 return _componentList[type];
+            }
+            if (HasComponentInWillAdd(type))
+            {
+                var willAddArray = _willAddComponent.ToArray();
+                for (int i = 0; i < willAddArray.Length; ++i)
+                {
+                    if (willAddArray[i].type == type)
+                    {
+                        return willAddArray[i].component;
+                    }
+                }
             }
             return null;
         }
@@ -303,9 +318,24 @@ namespace SWPLogicLayerF
             if (!isAlive)
                 return null;
             Type type = typeof(T);
+            if (HasComponentInWillDel(type))
+            {
+                return null;
+            }
             if (_componentList.ContainsKey(type))
             {
                 return _componentList[type] as T;
+            }
+            if (HasComponentInWillAdd(type))
+            {
+                var willAddArray = _willAddComponent.ToArray();
+                for(int i = 0; i < willAddArray.Length; ++i)
+                {
+                    if(willAddArray[i].type == type)
+                    {
+                        return willAddArray[i].component as T;
+                    }
+                }
             }
             return null;
         }
